@@ -1,24 +1,23 @@
-package com.tejnal.reservationsystem.tejnal_reservation_system.domain;
+package com.tejnal.reservationsystem.tejnal_reservation_system.model;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
-import java.util.Set;
+import javax.persistence.*;
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.SequenceGenerator;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 
 @Entity
+@Table
 @Getter
 @Setter
-public class User {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Reservation {
 
     @Id
     @Column(nullable = false, updatable = false)
@@ -34,8 +33,25 @@ public class User {
     )
     private Long id;
 
-    @OneToMany(mappedBy = "user")
-    private Set<Reservation> userReservations;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private AmenityType amenityType;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(nullable = false)
+    private LocalDate reservationDate;
+
+    @DateTimeFormat(pattern = "HH:mm")
+    @Column(nullable = false)
+    private LocalTime startTime;
+
+    @DateTimeFormat(pattern = "HH:mm")
+    @Column(nullable = false)
+    private LocalTime endTime;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(nullable = false, updatable = false)
     private OffsetDateTime dateCreated;

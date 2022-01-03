@@ -1,27 +1,22 @@
-package com.tejnal.reservationsystem.tejnal_reservation_system.domain;
+package com.tejnal.reservationsystem.tejnal_reservation_system.model;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.OffsetDateTime;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.SequenceGenerator;
+import java.util.HashSet;
+import java.util.Set;
+import javax.persistence.*;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
 @Entity
 @Getter
 @Setter
-public class Reservation {
+@AllArgsConstructor
+@NoArgsConstructor
+public class User {
 
     @Id
     @Column(nullable = false, updatable = false)
@@ -37,18 +32,17 @@ public class Reservation {
     )
     private Long id;
 
-    @Column(nullable = false)
-    private LocalDate reservationDate;
+    @Column(nullable = false, unique = true)
+    private String fullName;
 
-    @Column(nullable = false)
-    private LocalTime startTime;
+    @Column(nullable = false, unique = true)
+    private String username;
 
-    @Column(nullable = false)
-    private LocalTime endTime;
+    @Column
+    private String passwordHash;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private Set<Reservation> reservations = new HashSet<>();
 
     @Column(nullable = false, updatable = false)
     private OffsetDateTime dateCreated;
@@ -65,6 +59,13 @@ public class Reservation {
     @PreUpdate
     public void preUpdate() {
         lastUpdated = OffsetDateTime.now();
+    }
+
+
+    public User(String fullName, String username, String passwordHash) {
+        this.fullName = fullName;
+        this.username = username;
+        this.passwordHash = passwordHash;
     }
 
 }

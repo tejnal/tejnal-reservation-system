@@ -1,8 +1,10 @@
 package com.tejnal.reservationsystem.tejnal_reservation_system.repos;
 
-import com.tejnal.reservationsystem.tejnal_reservation_system.domain.User;
+import com.tejnal.reservationsystem.tejnal_reservation_system.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface UserRepository extends JpaRepository<User, Long> {
+
+    User findUserByUsername(String username);
 }
